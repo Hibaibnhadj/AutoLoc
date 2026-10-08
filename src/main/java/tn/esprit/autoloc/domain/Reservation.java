@@ -25,4 +25,8 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private StatutReservation statut;
+
+    @OneToOne
+    @JoinColumn(name = "id_contrat")
+    private Contrat contrat;
 }
