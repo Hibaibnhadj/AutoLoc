@@ -97,22 +97,31 @@ public class AgenceTests {
     }
     @Test
     public void loadPagedAgences() {
-        Pageable pageable = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "idAgence"));
-        Page<Agence> page = fullAgenceRepository.findAll(pageable);
+        StringBuilder sb = new StringBuilder();
 
-        StringBuilder sb = new StringBuilder("\n");
-        sb.append("Total pages: ").append(page.getTotalPages()).append("\n")
-                .append("Page courante: ").append(page.getNumber()).append("\n\n");
+        int pageNumber = 0;
+        Page<Agence> page;
 
-        for (Agence a : page.getContent()) {
-            sb.append("Agence id: ").append(a.getIdAgence()).append("\n")
-                    .append("Nom: ").append(a.getNom()).append("\n\n");
-        }
+        do {
+            Pageable pageable = PageRequest.of(pageNumber, 2, Sort.by(Sort.Direction.DESC, "idAgence"));
+            page = fullAgenceRepository.findAll(pageable);
+
+            // Total pages printed once, before the first page
+            if (pageNumber == 0) {
+                sb.append("Nombre total de pages : ").append(page.getTotalPages()).append("\n");
+            }
+
+            sb.append("Page en cours : ").append(page.getNumber()).append("\n");
+
+            for (Agence a : page.getContent()) {
+                sb.append(a.getIdAgence()).append(" | ").append(a.getNom()).append("\n");
+            }
+
+            pageNumber++;
+        } while (page.hasNext());
 
         fail(sb.toString());
     }
-
-
     @Test
     public void basicLoadAgence() {
         loadAgence(basicAgenceRepository, "basic (CrudRepository)");
