@@ -3,6 +3,7 @@ package tn.esprit.autoloc;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.domain.CategorieVehicule;
@@ -17,10 +19,13 @@ import tn.esprit.autoloc.domain.StatutVehicule;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 import org.springframework.data.domain.Sort;
+import tn.esprit.autoloc.service.IAgenceService;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -30,6 +35,9 @@ public class AgenceTests {
     private AgenceRepositoryMock basicAgenceRepository;
     @Autowired
     private IAgenceRepository fullAgenceRepository;
+
+    @Autowired
+    private IAgenceService agenceService;
     private void addAgence(CrudRepository<Agence, Long> repository) {
 
         Agence agence = new Agence();
@@ -65,6 +73,21 @@ public class AgenceTests {
 
         repository.save(agence);
     }
+
+    @Test
+    public void createAgence() {
+        Agence agence = new Agence();
+        agence.setNom("Agence Ariana");
+        agence.setVille("Tunis");
+        agence.setAdresse("1 Rue Hedi");
+        agence.setTelephone("71585874");
+
+        Agence saved = agenceService.create(agence);
+
+        assertNotNull(saved);
+        assertNotNull(saved.getIdAgence());
+    }
+
     @Test
     public void basicAddAgence() {
         addAgence(basicAgenceRepository);
@@ -144,7 +167,7 @@ public class AgenceTests {
         fail(sb.toString());
     }
 }
+
+@Repository
 interface AgenceRepositoryMock extends CrudRepository<Agence, Long> {
-
-
 }
