@@ -1,5 +1,6 @@
 package tn.esprit.autoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.*;
@@ -37,12 +38,15 @@ public class Vehicule {
     @Column(nullable = false, length = 20)
     private StatutVehicule statut;
 
+    @JsonIgnore   // step 16: breaks the cycle
     @ManyToOne
     private Agence agence;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "vehicule", fetch = FetchType.LAZY)
     private Set<Maintenance> maintenances;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "vehicule_equipement",
@@ -50,6 +54,4 @@ public class Vehicule {
             inverseJoinColumns = @JoinColumn(name = "id_equipement")
     )
     private Set<Equipement> equipements;
-
-
 }
