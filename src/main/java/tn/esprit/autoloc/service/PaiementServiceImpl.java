@@ -2,42 +2,28 @@ package tn.esprit.autoloc.service;
 
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Paiement;
+import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IPaiementRepository;
 
+import java.util.List;
+
 @Service
-public class PaiementServiceImpl extends GenericServiceImpl<Paiement, Long> implements IPaiementService {
+public class PaiementServiceImpl implements IPaiementService {
+
+    private final IPaiementRepository repository;
 
     public PaiementServiceImpl(IPaiementRepository repository) {
-        super(repository);
+        this.repository = repository;
     }
 
     @Override
-    protected String getEntityName() {
-        return "Paiement";
+    public Paiement findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Paiement not found with id ", id.toString()));
     }
 
     @Override
-    protected Long getId(Paiement paiement) {
-        return paiement.getIdPaiement();
-    }
-
-    @Override
-    protected void setFields(Paiement source, Paiement target) {
-        // read-only: nothing to copy
-    }
-
-    @Override
-    public Paiement create(Paiement paiement) {
-        throw new UnsupportedOperationException("Paiement is read-only");
-    }
-
-    @Override
-    public Paiement update(Long id, Paiement paiement) {
-        throw new UnsupportedOperationException("Paiement is read-only");
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        throw new UnsupportedOperationException("Paiement is read-only");
+    public List<Paiement> findAll() {
+        return repository.findAll();
     }
 }

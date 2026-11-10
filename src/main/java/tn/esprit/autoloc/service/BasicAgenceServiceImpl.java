@@ -19,23 +19,24 @@ public class BasicAgenceServiceImpl implements IAgenceService {
 
     @Override
     public boolean check(Agence agence, boolean isNew) {
-        return Utils.isNotEmpty(agence.getNom())&& Utils.isNotEmpty(agence.getTelephone());
+        return Utils.isNotEmpty(agence.getNom()) && Utils.isNotEmpty(agence.getTelephone());
     }
 
     @Override
     public Agence create(Agence agence) {
-        if (agence.getIdAgence()!=null){
+        if (agence.getIdAgence() != null) {
             throw new IllegalArgumentException("identifiant non null");
         }
-        if (!check(agence, true )) {
-            throw new IllegalArgumentException("le non ou tel non null");
+        if (!check(agence, true)) {
+            throw new IllegalArgumentException("le nom ou tel non null");
         }
         return repository.save(agence);
     }
 
     @Override
     public Agence findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Agence not found with id ", id.toString()));
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence not found with id ", id.toString()));
     }
 
     @Override
