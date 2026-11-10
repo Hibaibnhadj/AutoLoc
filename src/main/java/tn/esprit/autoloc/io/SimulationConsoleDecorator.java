@@ -1,13 +1,11 @@
 package tn.esprit.autoloc.io;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
 import tn.esprit.autoloc.service.ISimulationService;
 
-@Primary
 @Service
 public class SimulationConsoleDecorator implements ISimulationService {
     private final ISimulationService delegate;

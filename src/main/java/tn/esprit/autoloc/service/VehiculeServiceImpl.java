@@ -51,4 +51,11 @@ public class VehiculeServiceImpl extends GenericServiceImpl<Vehicule, Long> impl
         double tarifJour = vehicule.getTarifJournalier().doubleValue();
         return strategies.get(offre.name()).calculer(tarifJour, jours);
     }
+
+    @Override
+    public Vehicule disaffecte(Long id) {
+        var vehicule =findById(id);
+        vehicule.setAgence(null);
+        return repository.save(vehicule );
+    }
 }

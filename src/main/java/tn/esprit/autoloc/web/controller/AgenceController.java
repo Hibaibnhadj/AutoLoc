@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.autoloc.calcul.VehiculeOffre;
@@ -19,10 +19,15 @@ import java.util.List;
 @Tag(name = "Agences", description = "Gestion des agences de location")
 @RestController
 @RequestMapping("agences")
-@RequiredArgsConstructor
 public class AgenceController {
     private final ISimulationService simulationService;
     private final IAgenceService agenceService;
+
+    public AgenceController(@Qualifier("simulationConsoleDecorator") ISimulationService simulationService,
+                            IAgenceService agenceService) {
+        this.simulationService = simulationService;
+        this.agenceService = agenceService;
+    }
 
     @Operation(summary = "Lister les agences")
     @ApiResponse(responseCode = "200", description = "Liste des agences")
