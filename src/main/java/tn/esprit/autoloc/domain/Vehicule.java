@@ -47,11 +47,6 @@ public class Vehicule {
     private Set<Maintenance> maintenances;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "vehicule_equipement",
-            joinColumns = @JoinColumn(name = "id_vehicule"),
-            inverseJoinColumns = @JoinColumn(name = "id_equipement")
-    )
+    @ManyToMany(mappedBy = "vehicules")
     private Set<Equipement> equipements;
 }

@@ -47,4 +47,16 @@ public class VehiculeController {
     public Vehicule disaffecte(@PathVariable Long id) {
         return service.disaffecte(id);
     }
+
+    @PutMapping("{idVehicule}/affecter/{idAgence}")
+    public Vehicule affecte(@PathVariable Long idVehicule, @PathVariable Long idAgence) {
+        return service.affecte(idVehicule, idAgence);
+
+    }
+
+    @PutMapping("{idVehicule}/equipements/{idEquipement}")
+    public Vehicule affecteEquipement(@PathVariable Long idVehicule, @PathVariable Long idEquipement) {
+        return service.affecteEquipement(idVehicule, idEquipement);
+    }
+
 }

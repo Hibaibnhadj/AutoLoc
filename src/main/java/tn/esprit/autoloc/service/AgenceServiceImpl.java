@@ -2,11 +2,16 @@ package tn.esprit.autoloc.service;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.Utils;
 import tn.esprit.autoloc.calcul.VehiculeOffre;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.Employe;
 import tn.esprit.autoloc.domain.Vehicule;
 import tn.esprit.autoloc.repository.IAgenceRepository;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Primary
 @Service
@@ -14,10 +19,13 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
         implements IAgenceService, ISimulationService {
 
     private final IVehiculeService vehiculeService;
+    private final IEmployeService employeService;
 
-    public AgenceServiceImpl(IAgenceRepository repository, IVehiculeService vehiculeService) {
+    public AgenceServiceImpl(IAgenceRepository repository, IVehiculeService vehiculeService,
+                             IEmployeService employeService) {
         super(repository);
         this.vehiculeService = vehiculeService;
+        this.employeService = employeService;
     }
 
     @Override
@@ -46,6 +54,19 @@ public class AgenceServiceImpl extends GenericServiceImpl<Agence, Long>
     @Override
     public boolean hasVehicules(Long id) {
         return !findById(id).getVehicules().isEmpty();
+    }
+
+    @Override
+    @Transactional
+    public Agence updateWithEmployes(Long id, Agence source) {
+        Set<Employe> nouveaux = new HashSet<>(source.getEmployes());
+        Agence agence = update(id, source);
+        for (Employe employe : nouveaux) {
+            agence.addEmploye(employe);
+            employeService.create(employe);
+        }
+        agence.setEffectif(nouveaux.size());
+        return repository.save(agence);
     }
 
     @Override

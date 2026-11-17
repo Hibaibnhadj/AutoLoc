@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,6 +23,9 @@ public class Equipement {
     private String libelle;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "equipements")
-    private Set<Vehicule> vehicules;
+    @ManyToMany
+    @JoinTable(name = "vehicule_equipement",
+            joinColumns = @JoinColumn(name = "id_equipement"),
+            inverseJoinColumns = @JoinColumn(name = "id_vehicule"))
+    private Set<Vehicule> vehicules = new HashSet<>();
 }

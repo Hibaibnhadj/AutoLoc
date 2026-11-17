@@ -1,9 +1,10 @@
 package tn.esprit.autoloc.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -30,10 +31,23 @@ public class Agence {
     @Column(nullable = false)
     private String telephone;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int effectif;
+
     @OneToMany(mappedBy = "agence", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<Vehicule> Vehicules;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "agence", fetch = FetchType.LAZY)
-    private Set<Employe> employes;
+    private Set<Employe> employes = new HashSet<>();
+
+    public void addEmploye(Employe e) {
+        employes.add(e);
+        e.setAgence(this);
+    }
+
+    public void removeEmploye(Employe e) {
+        employes.remove(e);
+        e.setAgence(null);
+    }
 }

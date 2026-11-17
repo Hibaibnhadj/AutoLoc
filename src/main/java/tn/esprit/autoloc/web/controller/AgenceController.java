@@ -80,6 +80,10 @@ public class AgenceController {
         agenceService.deleteById(id);
     }
 
+    @PutMapping("{id}/employes")
+    public Agence updateWithEmployes(@PathVariable Long id, @RequestBody Agence agence) {
+        return agenceService.updateWithEmployes(id, agence);
+    }
 
     @GetMapping("{id}/simulation")
     public String simuler(@PathVariable Long id,

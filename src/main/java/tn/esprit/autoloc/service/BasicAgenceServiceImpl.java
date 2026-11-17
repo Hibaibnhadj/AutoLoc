@@ -1,20 +1,26 @@
 package tn.esprit.autoloc.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.autoloc.Utils;
 import tn.esprit.autoloc.domain.Agence;
+import tn.esprit.autoloc.domain.Employe;
 import tn.esprit.autoloc.exception.ResourceNotFoundException;
 import tn.esprit.autoloc.repository.IAgenceRepository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class BasicAgenceServiceImpl implements IAgenceService {
 
     private final IAgenceRepository repository;
+    private final IEmployeService employeService;
 
-    public BasicAgenceServiceImpl(IAgenceRepository repository) {
+    public BasicAgenceServiceImpl(IAgenceRepository repository, IEmployeService employeService) {
         this.repository = repository;
+        this.employeService = employeService;
     }
 
     @Override
@@ -68,5 +74,18 @@ public class BasicAgenceServiceImpl implements IAgenceService {
     @Override
     public boolean hasVehicules(Long id) {
         return false;
+    }
+
+    @Override
+    @Transactional
+    public Agence updateWithEmployes(Long id, Agence source) {
+        Set<Employe> nouveaux = new HashSet<>(source.getEmployes());
+        Agence agence = update(id, source);
+        for (Employe employe : nouveaux) {
+            agence.addEmploye(employe);
+            employeService.create(employe);
+        }
+        agence.setEffectif(nouveaux.size());
+        return repository.save(agence);
     }
 }
